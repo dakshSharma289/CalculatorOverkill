@@ -6,7 +6,34 @@
 
 using namespace std;
 
-int SolveDMAS();
+pair <vector <int>, string> FetchOperators(string currentExpression){
+    string listOfOperators;
+    vector <int> listOfOperatorPositions;
+    for(int j = 0; j < currentExpression.length(); j++){
+        if (currentExpression[j == '+']){
+
+            listOfOperators.append("+");
+            listOfOperatorPositions.push_back(j);
+
+        }else if (currentExpression[j == '-']){
+
+            listOfOperators.append("-");
+            listOfOperatorPositions.push_back(j);
+            
+        }else if (currentExpression[j == '*']){
+
+            listOfOperators.append("*");
+            listOfOperatorPositions.push_back(j);
+            
+        }else if (currentExpression[j == '/']){
+
+            listOfOperators.append("/");
+            listOfOperatorPositions.push_back(j);
+            
+        } 
+    }
+    return make_pair(listOfOperatorPositions, listOfOperators);
+}
 
 void CheckBrackets(vector <int> bracketIndices){
     if(!(bracketIndices.size()%2)){
@@ -14,7 +41,7 @@ void CheckBrackets(vector <int> bracketIndices){
     }
 }
 
-pair <vector <int>, vector <bool>> FindBrackets (string input){
+pair <vector <int>, vector <bool>> FetchBrackets (string input){
     vector <int> listOfBracketIndices;
     vector <bool> listOfBracketType;
     for(int i = 0; i < input.length(); i++){
@@ -42,39 +69,17 @@ int main(){
             break;
         }
 //here I'm iterating through the input to figure out where and how many brackets are pestent.
-        vector <int> bracketIndices = FindBrackets(input).first;
-        vector <bool> bracketType = FindBrackets(input).second;
+        vector <int> bracketIndices = FetchBrackets(input).first;
+        vector <bool> bracketType = FetchBrackets(input).second;
 
         CheckBrackets(bracketIndices);
 
         for(int i = (bracketIndices.size()/2); (i >= 0) && !error; i--){
-            string currentExpression = input.substr(bracketIndices[i], (bracketIndices[bracketIndices.size() - i]) - bracketIndices[i]);
-            string operators;
-            vector <int> operatorPosition;
+            string currentExpression = input.substr(bracketIndices[i], (bracketIndices[bracketIndices.size() - i]) - bracketIndices[i-1]);
+            vector <int> operatorPosition = FetchOperators(currentExpression).first;
+            string operators = FetchOperators(currentExpression).second;
             int currentResult;
-            for(int j = 0; j < currentExpression.length(); j++){
-                if (currentExpression[j == '+']){
 
-                    operators.append("+");
-                    operatorPosition.push_back(j);
-
-                }else if (currentExpression[j == '-']){
-
-                    operators.append("-");
-                    operatorPosition.push_back(j);
-                    
-                }else if (currentExpression[j == '*']){
-
-                    operators.append("*");
-                    operatorPosition.push_back(j);
-                    
-                }else if (currentExpression[j == '/']){
-
-                    operators.append("/");
-                    operatorPosition.push_back(j);
-                    
-                } 
-            }
             for(int j = 0; (j < currentExpression.length()) && !error; j++){
                 vector <int> currentOperands;
                 string operation;
