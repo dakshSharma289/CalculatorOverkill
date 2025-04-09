@@ -1,2 +1,2 @@
 # CalculatorOverkill
-This is a over complicated app that i built on my limited knowledge on c++ data structures.
+With his limited exposure to the language and its data structures, the writer i atempting to build a complex calculator app, which can perform BODMAS calculations.
