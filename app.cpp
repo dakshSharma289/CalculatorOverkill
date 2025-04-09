@@ -71,6 +71,18 @@ int Divide(int a, int b){
     return (a / b);
 }
 
+int Multiply(int a, int b){
+    return (a * b);
+}
+
+int Add(int a, int b){
+    return (a + b);
+}
+
+int Subtract(int a, int b){
+    return (a - b);
+}
+
 int main(){
     bool error = false;
     cout << "Wellcome to my Overkill Calculator App" << endl << "To exit the program, type 'q' in a new line and press enter" << endl << "You can enter your problem bellow:" << endl;
@@ -82,6 +94,8 @@ int main(){
         if((input == "q") || (input == "Q")){
             break;
         }
+
+        input = RemoveWhiteSpace(input);
 //here I'm iterating through the input to figure out where and how many brackets are pestent.
         vector <int> bracketIndices = FetchBrackets(input).first;
         vector <bool> bracketType = FetchBrackets(input).second;
@@ -89,16 +103,20 @@ int main(){
         CheckBrackets(bracketIndices);
 
         for(int i = (bracketIndices.size()/2); (i >= 0) && !error; i--){
-            string currentExpression = input.substr(bracketIndices[i], (bracketIndices[bracketIndices.size() - i]) - bracketIndices[i-1]);
+            string currentExpression = input.substr(bracketIndices[i - 1] + 1, ((bracketIndices[bracketIndices.size() - i]) - bracketIndices[i-1]) - 1);
             vector <int> operatorPosition = FetchOperators(currentExpression).first;
             string operators = FetchOperators(currentExpression).second;
 
             for(int j = 0; (j < currentExpression.length()) && !error; j++){
-                string operation;
                 for(int t = 0; (t < operators.length()) && !error; t++){
-                    int currentResult;
+                    int currentResult = 0;
                     vector <int> currentOperandPosition;
                     vector <int> currentOperands {0, 0};
+                    if(currentExpression.length() == 1){
+                        input.replace(bracketIndices[i-1], 3, currentExpression);
+                        bracketIndices.erase(bracketIndices.begin() + ((bracketIndices.size()) / 2) - 1, bracketIndices.begin() + ((bracketIndices.size()) / 2) + 1);
+                        break;
+                    }
                     if(operators[t] == '/'){
                         int k = 0;
                         int counter = 1;
@@ -166,6 +184,7 @@ int main(){
                                     string temp;
                                     temp += currentExpression[operatorPosition[t] - counter];
                                     int operand = stoi(temp);
+                                    currentResult = Multiply(currentOperands[0], currentOperands[1]);
                                     currentOperands.push_back(operand);
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
@@ -203,6 +222,7 @@ int main(){
                                     temp += currentExpression[operatorPosition[t] - counter];
                                     int operand = stoi(temp);
                                     currentOperands.push_back(operand);
+                                    currentResult = Add(currentOperands[0], currentOperands[1]);
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
                                     error = true;
@@ -238,6 +258,7 @@ int main(){
                                     string temp;
                                     temp += currentExpression[operatorPosition[t] - counter];
                                     int operand = stoi(temp);
+                                    currentResult = Subtract(currentOperands[0], currentOperands[1]);
                                     currentOperands.push_back(operand);
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
