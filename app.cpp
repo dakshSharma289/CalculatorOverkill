@@ -154,13 +154,19 @@ int main(){
                     string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i+1] - bracketIndices[i] - 1);
                     vector <int> operatorPosition = FetchOperators(currentExpression).first;
                     string operators = FetchOperators(currentExpression).second;
-
+                    int numberOfOperators = operatorPosition.size();
                     operatorPosition = SortOperators(operatorPosition, operators).first;
                     operators = SortOperators(operatorPosition, operators).second;
 
-                    for(int t = 0; (t < operators.length()) && !error; t++){
+                    for(int t = 0; (t < numberOfOperators) && !error; t++){
+                        operatorPosition = FetchOperators(currentExpression).first;
+                        operators = FetchOperators(currentExpression).second;
+                        operatorPosition = SortOperators(operatorPosition, operators).first;
+                        operators = SortOperators(operatorPosition, operators).second;
+
+
                         int currentResult = 0;
-                        vector <int> currentOperandPosition;
+                        vector <int> currentOperandPosition = {0, 0};
                         vector <int> currentOperands {0, 0};
                         if(currentExpression.length() == 1){
                             input.replace(bracketIndices[i-1], 3, currentExpression);
@@ -171,11 +177,11 @@ int main(){
                             int counter = 1;
                             string secondOperand;
                             string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[t] - counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
                                         string temp;
-                                        temp += currentExpression[operatorPosition[t] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[t] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[t] - counter);
+                                        temp += currentExpression[operatorPosition[0] - counter];
+                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
                                         continue;
 
                                 }
@@ -191,11 +197,11 @@ int main(){
                                 }
                             
                             counter = 0;
-                            while(NotOperator(currentExpression[operatorPosition[t] + counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                 string temp;
-                                temp += currentExpression[operatorPosition[t] + counter];
-                                firstOperand.insert(0, 1, currentExpression[operatorPosition[t] + counter]);
-                                currentOperandPosition.push_back(operatorPosition[t] + counter);
+                                temp += currentExpression[operatorPosition[0] + counter];
+                                firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
+                                currentOperandPosition.push_back(operatorPosition[0] + counter);
                                 break;
                         }
                         try{
@@ -217,11 +223,12 @@ int main(){
                             int counter = 1;
                             string secondOperand;
                             string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[t] - counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
                                         string temp;
-                                        temp += currentExpression[operatorPosition[t] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[t] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[t] - counter);
+                                        temp += currentExpression[operatorPosition[0] - counter];
+                                        firstOperand.insert(firstOperand.end() - counter + 1, 1, currentExpression[operatorPosition[0] - counter]);
+                                        currentOperandPosition[0] = operatorPosition[0] - counter;
+                                        counter++;
                                         continue;
 
                                 }
@@ -237,11 +244,12 @@ int main(){
                                 }
                             
                             counter = 0;
-                            while(NotOperator(currentExpression[operatorPosition[t] + counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                 string temp;
-                                temp += currentExpression[operatorPosition[t] + counter];
-                                firstOperand.insert(0, 1, currentExpression[operatorPosition[t] + counter]);
-                                currentOperandPosition.push_back(operatorPosition[t] + counter);
+                                temp += currentExpression[operatorPosition[0] + counter];
+                                firstOperand.insert(counter -1, 1, currentExpression[operatorPosition[0] + counter]);
+                                currentOperandPosition[1] = operatorPosition[0] + counter;
+                                counter++;
                                 break;
                         }
                         try{
@@ -252,6 +260,8 @@ int main(){
                             currentOperands[0] = stoi(temp1);
                             currentOperands[1] = stoi(temp2);
                             currentResult = Multiply(currentOperands[0], currentOperands[1]);
+                            operators.erase(0);
+                            operatorPosition.erase(operatorPosition.begin());
                         }catch(const std:: invalid_argument& e){
                             cerr << "Error Invalid Agument " << e.what() << endl;
                             error = true;
@@ -263,11 +273,11 @@ int main(){
                             int counter = 1;
                             string secondOperand;
                             string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[t] - counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
                                         string temp;
-                                        temp += currentExpression[operatorPosition[t] - counter];
+                                        temp += currentExpression[operatorPosition[0] - counter];
                                         firstOperand.insert(0, 1, currentExpression[operatorPosition[t] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[t] - counter);
+                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
                                         continue;
 
                                 }
@@ -283,11 +293,11 @@ int main(){
                                 }
                             
                                 counter = 0;
-                                while(NotOperator(currentExpression[operatorPosition[t] + counter]) && !error){
+                                while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                     string temp;
-                                    temp += currentExpression[operatorPosition[t] + counter];
-                                    firstOperand.insert(0, 1, currentExpression[operatorPosition[t] + counter]);
-                                    currentOperandPosition.push_back(operatorPosition[t] + counter);
+                                    temp += currentExpression[operatorPosition[0] + counter];
+                                    firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
+                                    currentOperandPosition.push_back(operatorPosition[0] + counter);
                                     break;
                             }
                             try{
@@ -309,11 +319,11 @@ int main(){
                             int counter = 1;
                             string secondOperand;
                             string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[t] - counter]) && !error){
+                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
                                         string temp;
-                                        temp += currentExpression[operatorPosition[t] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[t] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[t] - counter);
+                                        temp += currentExpression[operatorPosition[0] - counter];
+                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
                                         continue;
 
                                 }
@@ -329,11 +339,11 @@ int main(){
                                 }
                             
                                 counter = 0;
-                                while(NotOperator(currentExpression[operatorPosition[t] + counter]) && !error){
+                                while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                     string temp;
-                                    temp += currentExpression[operatorPosition[t] + counter];
-                                    firstOperand.insert(0, 1, currentExpression[operatorPosition[t] + counter]);
-                                    currentOperandPosition.push_back(operatorPosition[t] + counter);
+                                    temp += currentExpression[operatorPosition[0] + counter];
+                                    firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
+                                    currentOperandPosition.push_back(operatorPosition[0] + counter);
                                     break;
                             }
                             try{
@@ -355,7 +365,7 @@ int main(){
                         currentExpression.replace(currentOperandPosition[0], (currentExpression.length() - currentOperandPosition[1]), to_string(currentResult));
                     }
                     
-                    currentExpression.replace(currentOperandPosition[0], 3, to_string(currentResult));
+                    currentExpression.replace(currentOperandPosition[0], currentOperandPosition[1] - currentOperandPosition[0] + 1, to_string(currentResult));
                 }
             }
         }
