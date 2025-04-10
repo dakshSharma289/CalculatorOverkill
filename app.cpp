@@ -354,21 +354,12 @@ int main(){
                         
                         currentExpression.replace(currentOperandPosition[0], (currentExpression.length() - currentOperandPosition[1]), to_string(currentResult));
                     }
+                    
+                    currentExpression.replace(currentOperandPosition[0], 3, to_string(currentResult));
                 }
             }
         }
 
-    //     for(int i = (bracketIndices.size()/2); (i >= 0) && !error; i--){
-    //         string currentExpression = input.substr(bracketIndices[i - 1] + 1, ((bracketIndices[bracketIndices.size() - i]) - bracketIndices[i-1]) - 1);
-
-
-    //         for(int j = 0; (j < currentExpression.length()) && !error; j++){
-                
-            
-    //         }
-    //     }
-
-    // }
     cout<<endl<< "program exited successfully.";
 
     return 0;
