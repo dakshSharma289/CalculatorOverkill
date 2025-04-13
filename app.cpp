@@ -62,6 +62,11 @@ string RemoveWhiteSpace(string input){
     return input;
 }
 
+string AddBrackets(string input){
+    input.push_back(')');
+    input.insert(0,"(");
+}
+
 pair <vector <int>, string> FetchOperators(string currentExpression){
     string listOfOperators;
     vector <int> listOfOperatorPositions;
@@ -141,6 +146,7 @@ int main(){
             break;
         }
 
+        input = AddBrackets(input);
         input = RemoveWhiteSpace(input);
 //here I'm iterating through the input to figure out where and how many brackets are pestent.
         vector <int> bracketIndices = FetchBrackets(input).first;
@@ -148,184 +154,52 @@ int main(){
 
         CheckBrackets(bracketIndices);
 
-        for(int m = 0; m < (bracketIndices.size())/2 ; m++){
-            for(int i = 0; i < bracketType.size(); i++){
-                if(bracketType[i] != bracketType[i+1]){
-                    string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i+1] - bracketIndices[i] - 1);
-                    vector <int> operatorPosition = FetchOperators(currentExpression).first;
-                    string operators = FetchOperators(currentExpression).second;
-                    const int numberOfOperators = operatorPosition.size();
-                    
-                    for(int t = 0; (t < (numberOfOperators + 1)) && !error; t++){
-                        operatorPosition = FetchOperators(currentExpression).first;
-                        operators = FetchOperators(currentExpression).second;
-                        operatorPosition = SortOperators(operatorPosition, operators).first;
-                        operators = SortOperators(operatorPosition, operators).second;
+            for(int m = 0; m < (bracketIndices.size())/2 ; m++){
+                for(int i = 0; i < bracketType.size(); i++){
+                    if(bracketType[i] != bracketType[i+1]){
+                        string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i+1] - bracketIndices[i] - 1);
+                        vector <int> operatorPosition = FetchOperators(currentExpression).first;
+                        string operators = FetchOperators(currentExpression).second;
+                        const int numberOfOperators = operatorPosition.size();
+                        
+                        for(int t = 0; (t < (numberOfOperators + 1)) && !error; t++){
+                            operatorPosition = FetchOperators(currentExpression).first;
+                            operators = FetchOperators(currentExpression).second;
+                            operatorPosition = SortOperators(operatorPosition, operators).first;
+                            operators = SortOperators(operatorPosition, operators).second;
 
 
-                        int currentResult = 0;
-                        vector <int> currentOperandPosition = {0, 0};
-                        vector <int> currentOperands {0, 0};
-                        if(!((FetchOperators(currentExpression).first).size())){
-                            input.replace(bracketIndices[i-1], currentExpression.size(), currentExpression);
-                            bracketIndices.erase(bracketIndices.begin() + ((bracketIndices.size()) / 2) - 1, bracketIndices.begin() + ((bracketIndices.size()) / 2) + 1);
-                            break;
-                        }
-                        if(operators[t] == '/'){
-                            int counter = 1;
-                            string secondOperand;
-                            string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
-                                        string temp;
-                                        temp += currentExpression[operatorPosition[0] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
-                                        continue;
-
-                                }
-
-                                try{
-                                    firstOperand = stoi(firstOperand);
-                                }catch(const std:: invalid_argument& e){
-                                    cerr << "Error Invalid Agument " << e.what() << endl;
-                                    error = true;
-                                }catch(const std:: out_of_range& e){
-                                    cerr << "Number too big." << endl;
-                                    error = true;
-                                }
-                            
-                            counter = 0;
-                            while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
-                                string temp;
-                                temp += currentExpression[operatorPosition[0] + counter];
-                                firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
-                                currentOperandPosition.push_back(operatorPosition[0] + counter);
+                            int currentResult = 0;
+                            vector <int> currentOperandPosition = {0, 0};
+                            vector <int> currentOperands {0, 0};
+                            if(!((FetchOperators(currentExpression).first).size())){
+                                input.replace(bracketIndices[i-1], currentExpression.size(), currentExpression);
+                                bracketIndices.erase(bracketIndices.begin() + ((bracketIndices.size()) / 2) - 1, bracketIndices.begin() + ((bracketIndices.size()) / 2) + 1);
                                 break;
-                        }
-                        try{
-                            string temp1;
-                            string temp2;
-                            temp1 += firstOperand;
-                            temp2 += secondOperand;
-                            currentOperands[0] = stoi(temp1);
-                            currentOperands[1] = stoi(temp2);
-                            currentResult = Divide(currentOperands[0], currentOperands[1]);
-                        }catch(const std:: invalid_argument& e){
-                            cerr << "Error Invalid Agument " << e.what() << endl;
-                            error = true;
-                        }catch(const std:: out_of_range& e){
-                            cerr << "Number too big." << endl;
-                            error = true;
-                        }
-                        }else if(operators[t] == '*'){
-                            int counter = 1;
-                            string secondOperand;
-                            string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
-                                        string temp;
-                                        temp += currentExpression[operatorPosition[0] - counter];
-                                        firstOperand.insert(firstOperand.end() - counter + 1, 1, currentExpression[operatorPosition[0] - counter]);
-                                        currentOperandPosition[0] = operatorPosition[0] - counter;
-                                        counter++;
-                                        continue;
-
-                                }
-
-                                try{
-                                    firstOperand = stoi(firstOperand);
-                                }catch(const std:: invalid_argument& e){
-                                    cerr << "Error Invalid Agument " << e.what() << endl;
-                                    error = true;
-                                }catch(const std:: out_of_range& e){
-                                    cerr << "Number too big." << endl;
-                                    error = true;
-                                }
-                            
-                            counter = 0;
-                            while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
-                                string temp;
-                                temp += currentExpression[operatorPosition[0] + counter];
-                                firstOperand.insert(counter -1, 1, currentExpression[operatorPosition[0] + counter]);
-                                currentOperandPosition[1] = operatorPosition[0] + counter;
-                                counter++;
-                                break;
-                        }
-                        try{
-                            string temp1;
-                            string temp2;
-                            temp1 += firstOperand;
-                            temp2 += secondOperand;
-                            currentOperands[0] = stoi(temp1);
-                            currentOperands[1] = stoi(temp2);
-                            currentResult = Multiply(currentOperands[0], currentOperands[1]);
-                            operators.erase(0);
-                            operatorPosition.erase(operatorPosition.begin());
-                        }catch(const std:: invalid_argument& e){
-                            cerr << "Error Invalid Agument " << e.what() << endl;
-                            error = true;
-                        }catch(const std:: out_of_range& e){
-                            cerr << "Number too big." << endl;
-                            error = true;
-                        }
-                        }else if(operators[t] == '+'){
-                            int counter = 1;
-                            string secondOperand;
-                            string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
-                                        string temp;
-                                        temp += currentExpression[operatorPosition[0] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
-                                        currentOperandPosition[0] = operatorPosition[0] - counter;
-                                        continue;
-
-                                }
-
-                                counter = 1;
-                                while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
-                                    string temp;
-                                    temp += currentExpression[operatorPosition[0] + counter];
-                                    firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
-                                    currentOperandPosition[1] = operatorPosition[0] + counter;
-                                    break;
                             }
-                            try{
-                                string temp1;
-                                string temp2;
-                                temp1 += firstOperand;
-                                temp2 += secondOperand;
-                                currentOperands[0] = stoi(temp1);
-                                currentOperands[1] = stoi(temp2);
-                                currentResult = Add(currentOperands[0], currentOperands[1]);
-                            }catch(const std:: invalid_argument& e){
-                                cerr << "Error Invalid Agument " << e.what() << endl;
-                                error = true;
-                            }catch(const std:: out_of_range& e){
-                                cerr << "Number too big." << endl;
-                                error = true;
-                            }
-                        }else if(operators[t] == '-'){
-                            int counter = 1;
-                            string secondOperand;
-                            string firstOperand;
-                            while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
-                                        string temp;
-                                        temp += currentExpression[operatorPosition[0] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
-                                        continue;
+                            if(operators[t] == '/'){
+                                int counter = 1;
+                                string secondOperand;
+                                string firstOperand;
+                                while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
+                                            string temp;
+                                            temp += currentExpression[operatorPosition[0] - counter];
+                                            firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                            currentOperandPosition.push_back(operatorPosition[0] - counter);
+                                            continue;
 
-                                }
+                                    }
 
-                                try{
-                                    firstOperand = stoi(firstOperand);
-                                }catch(const std:: invalid_argument& e){
-                                    cerr << "Error Invalid Agument " << e.what() << endl;
-                                    error = true;
-                                }catch(const std:: out_of_range& e){
-                                    cerr << "Number too big." << endl;
-                                    error = true;
-                                }
-                            
+                                    try{
+                                        firstOperand = stoi(firstOperand);
+                                    }catch(const std:: invalid_argument& e){
+                                        cerr << "Error Invalid Agument " << e.what() << endl;
+                                        error = true;
+                                    }catch(const std:: out_of_range& e){
+                                        cerr << "Number too big." << endl;
+                                        error = true;
+                                    }
+                                
                                 counter = 0;
                                 while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                     string temp;
@@ -341,7 +215,7 @@ int main(){
                                 temp2 += secondOperand;
                                 currentOperands[0] = stoi(temp1);
                                 currentOperands[1] = stoi(temp2);
-                                currentResult = Subtract(currentOperands[0], currentOperands[1]);
+                                currentResult = Divide(currentOperands[0], currentOperands[1]);
                             }catch(const std:: invalid_argument& e){
                                 cerr << "Error Invalid Agument " << e.what() << endl;
                                 error = true;
@@ -349,17 +223,148 @@ int main(){
                                 cerr << "Number too big." << endl;
                                 error = true;
                             }
+                            }else if(operators[t] == '*'){
+                                int counter = 1;
+                                string secondOperand;
+                                string firstOperand;
+                                while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
+                                            string temp;
+                                            temp += currentExpression[operatorPosition[0] - counter];
+                                            firstOperand.insert(firstOperand.end() - counter + 1, 1, currentExpression[operatorPosition[0] - counter]);
+                                            currentOperandPosition[0] = operatorPosition[0] - counter;
+                                            counter++;
+                                            continue;
+
+                                    }
+
+                                    try{
+                                        firstOperand = stoi(firstOperand);
+                                    }catch(const std:: invalid_argument& e){
+                                        cerr << "Error Invalid Agument " << e.what() << endl;
+                                        error = true;
+                                    }catch(const std:: out_of_range& e){
+                                        cerr << "Number too big." << endl;
+                                        error = true;
+                                    }
+                                
+                                counter = 0;
+                                while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
+                                    string temp;
+                                    temp += currentExpression[operatorPosition[0] + counter];
+                                    firstOperand.insert(counter -1, 1, currentExpression[operatorPosition[0] + counter]);
+                                    currentOperandPosition[1] = operatorPosition[0] + counter;
+                                    counter++;
+                                    break;
+                            }
+                            try{
+                                string temp1;
+                                string temp2;
+                                temp1 += firstOperand;
+                                temp2 += secondOperand;
+                                currentOperands[0] = stoi(temp1);
+                                currentOperands[1] = stoi(temp2);
+                                currentResult = Multiply(currentOperands[0], currentOperands[1]);
+                                operators.erase(0);
+                                operatorPosition.erase(operatorPosition.begin());
+                            }catch(const std:: invalid_argument& e){
+                                cerr << "Error Invalid Agument " << e.what() << endl;
+                                error = true;
+                            }catch(const std:: out_of_range& e){
+                                cerr << "Number too big." << endl;
+                                error = true;
+                            }
+                            }else if(operators[t] == '+'){
+                                int counter = 1;
+                                string secondOperand;
+                                string firstOperand;
+                                while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
+                                            string temp;
+                                            temp += currentExpression[operatorPosition[0] - counter];
+                                            firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                            currentOperandPosition[0] = operatorPosition[0] - counter;
+                                            continue;
+
+                                    }
+
+                                    counter = 1;
+                                    while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
+                                        string temp;
+                                        temp += currentExpression[operatorPosition[0] + counter];
+                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
+                                        currentOperandPosition[1] = operatorPosition[0] + counter;
+                                        break;
+                                }
+                                try{
+                                    string temp1;
+                                    string temp2;
+                                    temp1 += firstOperand;
+                                    temp2 += secondOperand;
+                                    currentOperands[0] = stoi(temp1);
+                                    currentOperands[1] = stoi(temp2);
+                                    currentResult = Add(currentOperands[0], currentOperands[1]);
+                                }catch(const std:: invalid_argument& e){
+                                    cerr << "Error Invalid Agument " << e.what() << endl;
+                                    error = true;
+                                }catch(const std:: out_of_range& e){
+                                    cerr << "Number too big." << endl;
+                                    error = true;
+                                }
+                            }else if(operators[t] == '-'){
+                                int counter = 1;
+                                string secondOperand;
+                                string firstOperand;
+                                while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
+                                            string temp;
+                                            temp += currentExpression[operatorPosition[0] - counter];
+                                            firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                            currentOperandPosition.push_back(operatorPosition[0] - counter);
+                                            continue;
+
+                                    }
+
+                                    try{
+                                        firstOperand = stoi(firstOperand);
+                                    }catch(const std:: invalid_argument& e){
+                                        cerr << "Error Invalid Agument " << e.what() << endl;
+                                        error = true;
+                                    }catch(const std:: out_of_range& e){
+                                        cerr << "Number too big." << endl;
+                                        error = true;
+                                    }
+                                
+                                    counter = 0;
+                                    while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
+                                        string temp;
+                                        temp += currentExpression[operatorPosition[0] + counter];
+                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
+                                        currentOperandPosition.push_back(operatorPosition[0] + counter);
+                                        break;
+                                }
+                                try{
+                                    string temp1;
+                                    string temp2;
+                                    temp1 += firstOperand;
+                                    temp2 += secondOperand;
+                                    currentOperands[0] = stoi(temp1);
+                                    currentOperands[1] = stoi(temp2);
+                                    currentResult = Subtract(currentOperands[0], currentOperands[1]);
+                                }catch(const std:: invalid_argument& e){
+                                    cerr << "Error Invalid Agument " << e.what() << endl;
+                                    error = true;
+                                }catch(const std:: out_of_range& e){
+                                    cerr << "Number too big." << endl;
+                                    error = true;
+                                }
+                            
+                            currentExpression.replace(currentOperandPosition[0], (currentExpression.length() - currentOperandPosition[1]), to_string(currentResult));
+                        }
                         
-                        currentExpression.replace(currentOperandPosition[0], (currentExpression.length() - currentOperandPosition[1]), to_string(currentResult));
+                        currentExpression.replace(currentOperandPosition[0], currentOperandPosition[1] - currentOperandPosition[0] + 1, to_string(currentResult));
                     }
-                    
-                    currentExpression.replace(currentOperandPosition[0], currentOperandPosition[1] - currentOperandPosition[0] + 1, to_string(currentResult));
                 }
             }
         }
-
-    cout<<endl<< "program exited successfully.";
-
-    return 0;
     }
+    cout<<endl<< "program exited successfully.";
+    return 0;
 }
