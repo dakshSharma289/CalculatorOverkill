@@ -154,11 +154,9 @@ int main(){
                     string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i+1] - bracketIndices[i] - 1);
                     vector <int> operatorPosition = FetchOperators(currentExpression).first;
                     string operators = FetchOperators(currentExpression).second;
-                    int numberOfOperators = operatorPosition.size();
-                    operatorPosition = SortOperators(operatorPosition, operators).first;
-                    operators = SortOperators(operatorPosition, operators).second;
-
-                    for(int t = 0; (t < numberOfOperators) && !error; t++){
+                    const int numberOfOperators = operatorPosition.size();
+                    
+                    for(int t = 0; (t < (numberOfOperators + 1)) && !error; t++){
                         operatorPosition = FetchOperators(currentExpression).first;
                         operators = FetchOperators(currentExpression).second;
                         operatorPosition = SortOperators(operatorPosition, operators).first;
@@ -168,8 +166,8 @@ int main(){
                         int currentResult = 0;
                         vector <int> currentOperandPosition = {0, 0};
                         vector <int> currentOperands {0, 0};
-                        if(currentExpression.length() == 1){
-                            input.replace(bracketIndices[i-1], 3, currentExpression);
+                        if(!((FetchOperators(currentExpression).first).size())){
+                            input.replace(bracketIndices[i-1], currentExpression.size(), currentExpression);
                             bracketIndices.erase(bracketIndices.begin() + ((bracketIndices.size()) / 2) - 1, bracketIndices.begin() + ((bracketIndices.size()) / 2) + 1);
                             break;
                         }
@@ -276,28 +274,18 @@ int main(){
                             while(NotOperator(currentExpression[operatorPosition[0] - counter]) && !error){
                                         string temp;
                                         temp += currentExpression[operatorPosition[0] - counter];
-                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[t] - counter]);
-                                        currentOperandPosition.push_back(operatorPosition[0] - counter);
+                                        firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
+                                        currentOperandPosition[0] = operatorPosition[0] - counter;
                                         continue;
 
                                 }
 
-                                try{
-                                    firstOperand = stoi(firstOperand);
-                                }catch(const std:: invalid_argument& e){
-                                    cerr << "Error Invalid Agument " << e.what() << endl;
-                                    error = true;
-                                }catch(const std:: out_of_range& e){
-                                    cerr << "Number too big." << endl;
-                                    error = true;
-                                }
-                            
-                                counter = 0;
+                                counter = 1;
                                 while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                     string temp;
                                     temp += currentExpression[operatorPosition[0] + counter];
                                     firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
-                                    currentOperandPosition.push_back(operatorPosition[0] + counter);
+                                    currentOperandPosition[1] = operatorPosition[0] + counter;
                                     break;
                             }
                             try{
