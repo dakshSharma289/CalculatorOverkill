@@ -317,27 +317,17 @@ int main(){
                                             string temp;
                                             temp += currentExpression[operatorPosition[0] - counter];
                                             firstOperand.insert(0, 1, currentExpression[operatorPosition[0] - counter]);
-                                            currentOperandPosition.push_back(operatorPosition[0] - counter);
+                                            currentOperandPosition[0] = operatorPosition[0] - counter;
                                             continue;
 
                                     }
 
-                                    try{
-                                        firstOperand = stoi(firstOperand);
-                                    }catch(const std:: invalid_argument& e){
-                                        cerr << "Error Invalid Agument " << e.what() << endl;
-                                        error = true;
-                                    }catch(const std:: out_of_range& e){
-                                        cerr << "Number too big." << endl;
-                                        error = true;
-                                    }
-                                
-                                    counter = 0;
+                                    counter = 1;
                                     while(NotOperator(currentExpression[operatorPosition[0] + counter]) && !error){
                                         string temp;
                                         temp += currentExpression[operatorPosition[0] + counter];
                                         firstOperand.insert(0, 1, currentExpression[operatorPosition[0] + counter]);
-                                        currentOperandPosition.push_back(operatorPosition[0] + counter);
+                                        currentOperandPosition[1] = operatorPosition[0] + counter;
                                         break;
                                 }
                                 try{
@@ -347,7 +337,7 @@ int main(){
                                     temp2 += secondOperand;
                                     currentOperands[0] = stoi(temp1);
                                     currentOperands[1] = stoi(temp2);
-                                    currentResult = Subtract(currentOperands[0], currentOperands[1]);
+                                    currentResult = Add(currentOperands[0], currentOperands[1]);
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
                                     error = true;
