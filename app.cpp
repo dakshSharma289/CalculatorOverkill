@@ -174,7 +174,8 @@ int main(){
                             vector <int> currentOperands {0, 0};
                             if(!((FetchOperators(currentExpression).first).size())){
                                 input.replace(bracketIndices[i-1], currentExpression.size(), currentExpression);
-                                bracketIndices.erase(bracketIndices.begin() + ((bracketIndices.size()) / 2) - 1, bracketIndices.begin() + ((bracketIndices.size()) / 2) + 1);
+                                bracketIndices.erase(bracketIndices.begin() + bracketIndices[i], bracketIndices.begin() + bracketIndices[i+1]);
+                                bracketType.erase(bracketType.begin() + bracketIndices[i], bracketType.begin() + bracketIndices[i+1]);
                                 break;
                             }
                             if(operators[t] == '/'){
@@ -299,9 +300,7 @@ int main(){
                                     string temp2;
                                     temp1 += firstOperand;
                                     temp2 += secondOperand;
-                                    currentOperands[0] = stoi(temp1);
-                                    currentOperands[1] = stoi(temp2);
-                                    currentResult = Add(currentOperands[0], currentOperands[1]);
+                                    currentResult = Add(stoi(temp1), stoi(temp2));
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
                                     error = true;
@@ -337,7 +336,7 @@ int main(){
                                     temp2 += secondOperand;
                                     currentOperands[0] = stoi(temp1);
                                     currentOperands[1] = stoi(temp2);
-                                    currentResult = Add(currentOperands[0], currentOperands[1]);
+                                    currentResult = Subtract(currentOperands[0], currentOperands[1]);
                                 }catch(const std:: invalid_argument& e){
                                     cerr << "Error Invalid Agument " << e.what() << endl;
                                     error = true;
