@@ -1,8 +1,67 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<stdexcept>
 
 using namespace std;
+
+int ComputeResult(int num1, int num2, char op){
+    if(op == '/'){
+        return (num1 / num2);
+    }else if(op == '*'){
+        return (num1 * num2);
+    }else if(op == '+'){
+        return (num1 + num2);
+    }else{
+        return (num1 - num2);
+    }
+}
+
+bool IsNumber(string candidate){
+    try{
+        string temp;
+        temp += candidate;
+        candidate = stoi(temp);
+        return true;
+    }catch(const invalid_argument & e){
+        return false;
+    }catch(const out_of_range & e){
+        return false;
+    }
+}
+
+pair <vector <int>, vector <char>> SortOperators (vector <int> listOfOperatorIndices, vector <char> listOfOperators){
+    vector <int> sortedOperatorIndices;
+    vector <char> sortedOperators;
+    for(int i = 0; i < listOfOperatorIndices.size(); i++){
+        for(int j = 0; j < listOfOperatorIndices.size(); j++){
+            if(listOfOperators[j] == '/'){
+                sortedOperatorIndices.push_back(j);
+                sortedOperators.push_back(listOfOperators[j]);
+            }
+        }
+        for(int j = 0; j < listOfOperatorIndices.size(); j++){
+            if(listOfOperators[j] == '*'){
+                sortedOperatorIndices.push_back(j);
+                sortedOperators.push_back(listOfOperators[j]);
+            }
+        }
+        for(int j = 0; j < listOfOperatorIndices.size(); j++){
+            if(listOfOperators[j] == '+'){
+                sortedOperatorIndices.push_back(j);
+                sortedOperators.push_back(listOfOperators[j]);
+            }
+        }
+        for(int j = 0; j < listOfOperatorIndices.size(); j++){
+            if(listOfOperators[j] == '-'){
+                sortedOperatorIndices.push_back(j);
+                sortedOperators.push_back(listOfOperators[j]);
+            }
+        }
+    }
+
+    return make_pair(sortedOperatorIndices, sortedOperators);
+}
 
 pair <vector<int>, vector<bool>> FetchBrackets(string input){
         vector <int> listOfBracketIndices;
@@ -26,7 +85,6 @@ pair <vector<int>, vector<bool>> FetchBrackets(string input){
 pair <vector <int>, vector <char>> FetchOperators(string currentExpression){
     vector <int> listOfOperatorIndices;
     vector <char> listOfOperators;
-    cout << "function called" << endl;
     for(int j = 0 ; j < currentExpression.length(); j++){
         if(currentExpression[j] == '/'){
             listOfOperatorIndices.push_back(j);
@@ -43,9 +101,8 @@ pair <vector <int>, vector <char>> FetchOperators(string currentExpression){
         }else {
             continue;
         }
-
-        return make_pair(listOfOperatorIndices, listOfOperators);
     }
+    return make_pair(listOfOperatorIndices, listOfOperators);
 }
 
 string AddTerminalBrackets(string input){
@@ -74,32 +131,61 @@ int main(){
     cout << "the program starts here: " << endl;
 
     while (1>0){
-        string input = "12+++++";
-        // getline(cin, input);
+        string input;
+        getline(cin, input);
 
         if (toupper(input[0]) == 'Q'){
             break;
         }else if (CheckBrackets(input)){
             input = AddTerminalBrackets(input);
-            vector <int> bracketIndices = FetchBrackets(input).first;
-            vector <bool> bracketTypes = FetchBrackets(input).second;
-            int extraIterations;
+            while(!(IsNumber(input))){
+                vector <int> bracketIndices = FetchBrackets(input).first;
+                vector <bool> bracketTypes = FetchBrackets(input).second;
+                const int iterations = bracketIndices.size();
+                int extraIterations;
 
-            for(int i = 0; i < bracketIndices.size() + extraIterations; i++){
-                if(bracketTypes[i] != bracketTypes[i+1]){
-                    string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i + 1] - bracketIndices[i] - 1);
-                    vector <int> operatorIndices = FetchOperators(currentExpression).first;
-                    vector <char> operators = FetchOperators(currentExpression).second;
-                    cout << endl << operatorIndices.size();
-                    // for(int a = 0; a < operatorIndices.size(); a++){
-                    //     cout << operatorIndices[a] << endl;
-                    //     cout << operators[a] << endl;
-                    // }
-                    // break;
-                }else{
-                    extraIterations++;
+                for(int i = 0; i < iterations + extraIterations; i++){
+                    if(bracketTypes[i] != bracketTypes[i+1]){
+                        string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i + 1] - bracketIndices[i] - 1);
+                        vector <int> operatorIndices = FetchOperators(currentExpression).first;
+                        vector <char> operators = FetchOperators(currentExpression).second;
+                        operatorIndices = SortOperators(operatorIndices, operators).first;
+                        operators = SortOperators(operatorIndices, operators).second;
+
+                        if(IsNumber(currentExpression)){
+                            input.replace(input.begin() + bracketIndices[i], input.begin() + bracketIndices[i+1], currentExpression);
+                            break;
+                        }
+
+                        for(int j = 0; j < operators.size(); j = j){
+                            string firstOperand;
+                            string secondOperand;
+                            int currentResult = 0;
+                            int counter1 = 1;
+                            string temp1;
+                            temp1 += currentExpression[operatorIndices[j] - counter1];
+                            while((IsNumber(temp1))){
+                                firstOperand.insert(0, 1, currentExpression[operatorIndices[j] - counter1]);
+                                counter1++;
+                            }
+                            int counter2 = 1;
+                            string temp2;
+                            temp2 += currentExpression[operatorIndices[j] + counter2];
+                            while((IsNumber(temp2))){
+                                secondOperand.insert(secondOperand.end(), 1, currentExpression[operatorIndices[j] + counter2]);
+                                counter2++;
+                            }
+                            int firstNum = stoi(firstOperand);
+                            int secondNum = stoi(secondOperand);
+                            currentResult = ComputeResult(firstNum, secondNum, operators[j]);
+                            input.replace(input.begin() + bracketIndices[i] + 1 + operatorIndices[j] - counter1, input.begin() + bracketIndices[i] + 1 + operatorIndices[j] + counter2 - 1, to_string(currentResult));
+                        }
+                    }else{
+                        extraIterations++;
+                    }
                 }
             }
+            cout << endl << input << endl;
         }
         cout << endl;
     }
