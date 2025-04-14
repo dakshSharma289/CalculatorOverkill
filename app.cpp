@@ -26,6 +26,7 @@ pair <vector<int>, vector<bool>> FetchBrackets(string input){
 pair <vector <int>, vector <char>> FetchOperators(string currentExpression){
     vector <int> listOfOperatorIndices;
     vector <char> listOfOperators;
+    cout << "function called" << endl;
     for(int j = 0 ; j < currentExpression.length(); j++){
         if(currentExpression[j] == '/'){
             listOfOperatorIndices.push_back(j);
@@ -60,7 +61,7 @@ bool CheckBrackets(string input){
             noOfBrackets++;
         }
     }
-    if(!(2 % noOfBrackets)){
+    if(!(noOfBrackets % 2)){
         return true;
     }else{
         cout << "check the brackets in your input" << endl;
@@ -72,11 +73,11 @@ int main(){
 
     cout << "the program starts here: " << endl;
 
-    string input;
-    getline(cin, input);
-
     while (1>0){
-        if (toupper(input[0]) == 'q'){
+        string input = "12+++++";
+        // getline(cin, input);
+
+        if (toupper(input[0]) == 'Q'){
             break;
         }else if (CheckBrackets(input)){
             input = AddTerminalBrackets(input);
@@ -89,8 +90,12 @@ int main(){
                     string currentExpression = input.substr(bracketIndices[i] + 1, bracketIndices[i + 1] - bracketIndices[i] - 1);
                     vector <int> operatorIndices = FetchOperators(currentExpression).first;
                     vector <char> operators = FetchOperators(currentExpression).second;
-
-                    
+                    cout << endl << operatorIndices.size();
+                    // for(int a = 0; a < operatorIndices.size(); a++){
+                    //     cout << operatorIndices[a] << endl;
+                    //     cout << operators[a] << endl;
+                    // }
+                    // break;
                 }else{
                     extraIterations++;
                 }
