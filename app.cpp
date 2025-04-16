@@ -19,10 +19,12 @@ int ComputeResult(int num1, int num2, char op){
 
 bool IsNumber(string candidate){
     try{
-        string temp;
-        temp += candidate;
-        candidate = stoi(temp);
-        return true;
+        for(int i = 0; i < candidate.length(); i++){
+            string temp;
+            temp += candidate[i];
+            candidate[i] = stoi(temp);
+            return true;
+        }
     }catch(const invalid_argument & e){
         return false;
     }catch(const out_of_range & e){
@@ -111,6 +113,19 @@ string AddTerminalBrackets(string input){
     return input;
 }
 
+string RemoveWhiteSpace(string input){
+    for(int i = 0; i < input.length(); i++){
+        for(int j = 0; j < input.length(); j++){
+            if(input[j] == ' '){
+                input.erase(j, 1);
+                cout << endl << input << endl;
+                break;
+            }
+        }
+    }
+    return input;
+}
+
 bool CheckBrackets(string input){
     int noOfBrackets = 0;
     for(int i = 0; i < input.length(); i++){
@@ -130,13 +145,17 @@ int main(){
 
     cout << "the program starts here: " << endl;
 
-    while (1>0){
+    while (1 > 0){
         string input;
+        cout << "enter your input:" << endl;
         getline(cin, input);
+        // input = "12    +   7";
 
         if (toupper(input[0]) == 'Q'){
             break;
         }else if (CheckBrackets(input)){
+            input = RemoveWhiteSpace(input);
+            cout << input;
             input = AddTerminalBrackets(input);
             while(!(IsNumber(input))){
                 vector <int> bracketIndices = FetchBrackets(input).first;
@@ -151,9 +170,8 @@ int main(){
                         vector <char> operators = FetchOperators(currentExpression).second;
                         operatorIndices = SortOperators(operatorIndices, operators).first;
                         operators = SortOperators(operatorIndices, operators).second;
-
                         if(IsNumber(currentExpression)){
-                            input.replace(input.begin() + bracketIndices[i], input.begin() + bracketIndices[i+1], currentExpression);
+                            input.replace(input.begin() + bracketIndices[i], input.begin() + bracketIndices[i+1] + 1, currentExpression);
                             break;
                         }
 
@@ -185,7 +203,7 @@ int main(){
                     }
                 }
             }
-            cout << endl << input << endl;
+            // cout << endl << input << endl;
         }
         cout << endl;
     }
