@@ -11,12 +11,37 @@ int EvaluateCurrentExpression(string currentExpression){
     vector <int> operatorIndices = operatorsPackage.first;
     vector <char> operators = operatorsPackage.second;
     for(int i = 0; i < operatorIndices.size(); i++){
+        bool paranthesis = false;
         string firstOperand;
         string secondOperand;
         int currentResult = 0;
         int counter1 = 1;
         string temp1;
         temp1 += currentExpression[operatorIndices[i] - counter1];
+        if(temp1 == ")"){
+            paranthesis = true;
+            int end_pos;
+            int start_pos = operatorIndices[i] - counter1;
+            int outerMostBracket = 0;
+            int counter11 = 0;
+            int counter12 = 0;
+            while(paranthesis){
+                if(currentExpression[operatorIndices[i] - counter1 - counter12] == ')'){
+                    counter11++;
+                    continue;
+                }else if((currentExpression[operatorIndices[i] - counter1 - counter12] == '(') && !counter11){
+                    end_pos = operatorIndices[i] - counter1 - counter12;
+                    paranthesis = false;
+                    continue;
+                }else if(currentExpression[operatorIndices[i] - counter1 - counter12] == '('){
+                    counter11--;
+                    continue;
+                }else{
+                    continue;
+                }
+            currentExpression.replace(start_pos, end_pos, EvaluateCurrentExpression());
+            }
+        }
         while((IsNumber(temp1))){
             firstOperand.insert(0, 1, currentExpression[operatorIndices[i] - counter1]);
             counter1++;
