@@ -16,7 +16,10 @@ int EvaluateCurrentExpression(string currentExpression){
         string secondOperand;
         int currentResult = 0;
         int counter1 = 1;
+        int counter2 = 1;
         string temp1;
+        string temp2;
+        temp2 += currentExpression[operatorIndices[i] + counter2];
         temp1 += currentExpression[operatorIndices[i] - counter1];
         if(temp1 == ")"){
             paranthesis = true;
@@ -39,19 +42,41 @@ int EvaluateCurrentExpression(string currentExpression){
                 }else{
                     continue;
                 }
-            currentExpression.replace(start_pos, end_pos, EvaluateCurrentExpression());
+            currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(end_pos, start_pos - end_pos - 1))));
+            }
+        }else if(temp2 == "("){
+            paranthesis = true;
+            int end_pos;
+            int start_pos = operatorIndices[i] + counter2;
+            int NotOuterMostBracket = 0;
+            int counter21 = 0;
+            int counter22 = 0;
+            while(paranthesis){
+                if(currentExpression[operatorIndices[i] + counter2 + counter22] == '('){
+                    NotOuterMostBracket++;
+                    continue;
+                }else if((currentExpression[operatorIndices[i] + counter2 + counter22] == ')') && !NotOuterMostBracket){
+                    end_pos = operatorIndices[i] + counter2 +counter22;
+                    paranthesis = false;
+                    continue;
+                }else if(currentExpression[operatorIndices[i] + counter2 - counter22] == ')'){
+                    NotOuterMostBracket--;
+                    continue;
+                }else{
+                    continue;
+                }
+            currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(start_pos, end_pos - start_pos - 1))));
             }
         }
         while((IsNumber(temp1))){
-            firstOperand.insert(0, 1, currentExpression[operatorIndices[i] - counter1]);
-            counter1++;
+            firstOperand.insert(0, 1, currentExpression[operatorIndices[i] + counter1]);
+            counter2++;
         }
-        int counter2 = 1;
-        string temp2;
         while((IsNumber(temp2))){
             secondOperand.insert(secondOperand.end(), 1, currentExpression[operatorIndices[i] + counter2]);
             counter2++;
         }
+        
     }
 }
 
