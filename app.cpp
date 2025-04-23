@@ -6,84 +6,119 @@
 using namespace std;
 
 int EvaluateCurrentExpression(string currentExpression){
-    pair <vector<int>, vector<char>> operatorsPackage = FetchOperators(currentExpression);
-    operatorsPackage = SortOperators(operatorsPackage);
-    vector <int> operatorIndices = operatorsPackage.first;
-    vector <char> operators = operatorsPackage.second;
-    int iterations = operatorIndices.size();
-    for(int i = 0; i < iterations; i++){
-        pair <vector<int>, vector<char>> operatorsPackage = FetchOperators(currentExpression);
-        operatorsPackage = SortOperators(operatorsPackage);
-        vector <int> operatorIndices = operatorsPackage.first;
-        vector <char> operators = operatorsPackage.second;
-        bool paranthesis = false;
-        string firstOperand;
-        string secondOperand;
-        int currentResult = 0;
-        int counter1 = 1;
-        int counter2 = 1;
-        string temp1;
-        string temp2;
-        temp2 += currentExpression[operatorIndices[i] + counter2];
-        temp1 += currentExpression[operatorIndices[i] - counter1];
-        if(temp1 == ")"){
-            paranthesis = true;
-            int end_pos;
-            int start_pos = operatorIndices[i] - counter1;
-            int outerMostBracket = 0;
-            int counter11 = 0;
-            int counter12 = 0;
-            while(paranthesis){
-                if(currentExpression[operatorIndices[i] - counter1 - counter12] == ')'){
-                    counter11++;
-                    continue;
-                }else if((currentExpression[operatorIndices[i] - counter1 - counter12] == '(') && !counter11){
-                    end_pos = operatorIndices[i] - counter1 - counter12;
-                    paranthesis = false;
-                    continue;
-                }else if(currentExpression[operatorIndices[i] - counter1 - counter12] == '('){
-                    counter11--;
-                    continue;
-                }else{
-                    continue;
-                }
-            currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(end_pos, start_pos - end_pos - 1))));
-            }
-        }else if(temp2 == "("){
-            paranthesis = true;
-            int end_pos;
-            int start_pos = operatorIndices[i] + counter2;
-            int NotOuterMostBracket = 0;
-            int counter21 = 0;
-            int counter22 = 0;
-            while(paranthesis){
-                if(currentExpression[operatorIndices[i] + counter2 + counter22] == '('){
-                    NotOuterMostBracket++;
-                    continue;
-                }else if((currentExpression[operatorIndices[i] + counter2 + counter22] == ')') && !NotOuterMostBracket){
-                    end_pos = operatorIndices[i] + counter2 +counter22;
-                    paranthesis = false;
-                    continue;
-                }else if(currentExpression[operatorIndices[i] + counter2 - counter22] == ')'){
-                    NotOuterMostBracket--;
-                    continue;
-                }else{
-                    continue;
-                }
-            currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(start_pos, end_pos - start_pos - 1))));
-            }
-        }
-        while((IsNumber(temp1))){
-            firstOperand.insert(0, 1, currentExpression[operatorIndices[i] - counter1]); 
-            counter2++;
-        }
-        while((IsNumber(temp2))){
-            secondOperand.insert(secondOperand.end(), 1, currentExpression[operatorIndices[i] + counter2]);
-            counter2++;
-        }
-        currentResult = ComputeResult(stoi(firstOperand), stoi(secondOperand), operators[i]);
-        currentExpression.replace(operatorIndices[i] - counter1, operatorIndices[i] + counter2, to_string(currentResult));
+    // pair <vector<int>, vector<char>> operatorsPackage = FetchOperators(currentExpression);
+    // operatorsPackage = SortOperators(operatorsPackage);
+    // vector <int> operatorIndices = operatorsPackage.first;
+    // vector <char> operators = operatorsPackage.second;
+    // const int iterations = operatorIndices.size();
+    // for(int i = 0; i < iterations; i++){
+    //     pair <vector<int>, vector<char>> operatorsPackage = FetchOperators(currentExpression);
+    //     operatorsPackage = SortOperators(operatorsPackage);
+    //     vector <int> operatorIndices = operatorsPackage.first;
+    //     vector <char> operators = operatorsPackage.second;
+    //     bool paranthesis = false;
+    //     string firstOperand;
+    //     string secondOperand;
+    //     int currentResult = 0;
+    //     int counter1 = 1;
+    //     int counter2 = 1;
+    //     string temp1;
+    //     string temp2;
+    //     temp2 += currentExpression[operatorIndices[i] + counter2];
+    //     temp1 += currentExpression[operatorIndices[i] - counter1];
+    //     if(temp1 == ")"){
+    //         paranthesis = true;
+    //         int end_pos;
+    //         int start_pos = operatorIndices[i] - counter1;
+    //         int outerMostBracket = 0;
+    //         int counter11 = 0;
+    //         int counter12 = 0;
+    //         while(paranthesis){
+    //             if(currentExpression[operatorIndices[i] - counter1 - counter12] == ')'){
+    //                 counter11++;
+    //                 continue;
+    //             }else if((currentExpression[operatorIndices[i] - counter1 - counter12] == '(') && !counter11){
+    //                 end_pos = operatorIndices[i] - counter1 - counter12;
+    //                 paranthesis = false;
+    //                 continue;
+    //             }else if(currentExpression[operatorIndices[i] - counter1 - counter12] == '('){
+    //                 counter11--;
+    //                 continue;
+    //             }else{
+    //                 continue;
+    //             }
+    //         currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(end_pos, start_pos - end_pos - 1))));
+    //         }
+    //     }else if(temp2 == "("){
+    //         paranthesis = true;
+    //         int end_pos;
+    //         int start_pos = operatorIndices[i] + counter2;
+    //         int NotOuterMostBracket = 0;
+    //         int counter21 = 0;
+    //         int counter22 = 0;
+    //         while(paranthesis){
+    //             if(currentExpression[operatorIndices[i] + counter2 + counter22] == '('){
+    //                 NotOuterMostBracket++;
+    //                 continue;
+    //             }else if((currentExpression[operatorIndices[i] + counter2 + counter22] == ')') && !NotOuterMostBracket){
+    //                 end_pos = operatorIndices[i] + counter2 +counter22;
+    //                 paranthesis = false;
+    //                 continue;
+    //             }else if(currentExpression[operatorIndices[i] + counter2 - counter22] == ')'){
+    //                 NotOuterMostBracket--;
+    //                 continue;
+    //             }else{
+    //                 continue;
+    //             }
+    //         currentExpression.replace(start_pos, end_pos, to_string(EvaluateCurrentExpression(currentExpression.substr(start_pos, end_pos - start_pos - 1))));
+    //         }
+    //     }
+    //     while((IsNumber(temp1))){
+    //         firstOperand.insert(0, 1, currentExpression[operatorIndices[i] - counter1]); 
+    //         counter2++;
+    //     }
+    //     while((IsNumber(temp2))){
+    //         secondOperand.insert(secondOperand.end(), 1, currentExpression[operatorIndices[i] + counter2]);
+    //         counter2++;
+    //     }
+    //     currentResult = ComputeResult(stoi(firstOperand), stoi(secondOperand), operators[i]);
+    //     currentExpression.replace(operatorIndices[i] - counter1, operatorIndices[i] + counter2, to_string(currentResult));
+    // }
+    while(!IsNumber(currentExpression)){
+        ReduceToSimpler(currentExpression);
     }
+    return stoi(currentExpression);
+}
+
+string ReduceToSimpler(string expression){
+    pair <vector <int>, vector <char>> operatorPackage = FetchOperators(expression);
+    operatorPackage = SortOperators(operatorPackage);
+    vector <int> operatorPositions = operatorPackage.first;
+    vector <char> operators = operatorPackage.second;
+    int counter1;
+    int counter2;
+    string temp1;
+    string temp2;
+    temp1 += expression[operatorPositions[0] - counter1];
+    temp2 += expression[operatorPositions[0] + counter2];
+    string firstOperand;
+    string secondOperand;
+    int firstOperandPosition;
+    int secondOperandPosition;
+    while(IsNumber(temp1)){
+        firstOperand.insert(firstOperand.begin(), expression[operatorPositions[0] - counter1]);
+        firstOperandPosition = operatorPositions[0] - counter1;
+        counter1++;
+    }
+    while(IsNumber(temp2)){
+        firstOperand.push_back(expression[operatorPositions[0] + counter2]);
+        secondOperandPosition = operatorPositions[0] + counter2;
+        counter2++;
+    }
+    int currentResult = ComputeResult(stoi(firstOperand), stoi(secondOperand), operators[0]);
+    expression = expression.replace(firstOperandPosition, secondOperandPosition, to_string(currentResult));
+
+    return expression;
 }
 
 int ComputeResult(int num1, int num2, char op){
