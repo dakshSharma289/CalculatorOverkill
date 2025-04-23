@@ -10,7 +10,12 @@ int EvaluateCurrentExpression(string currentExpression){
     operatorsPackage = SortOperators(operatorsPackage);
     vector <int> operatorIndices = operatorsPackage.first;
     vector <char> operators = operatorsPackage.second;
-    for(int i = 0; i < operatorIndices.size(); i++){
+    int iterations = operatorIndices.size();
+    for(int i = 0; i < iterations; i++){
+        pair <vector<int>, vector<char>> operatorsPackage = FetchOperators(currentExpression);
+        operatorsPackage = SortOperators(operatorsPackage);
+        vector <int> operatorIndices = operatorsPackage.first;
+        vector <char> operators = operatorsPackage.second;
         bool paranthesis = false;
         string firstOperand;
         string secondOperand;
@@ -69,17 +74,29 @@ int EvaluateCurrentExpression(string currentExpression){
             }
         }
         while((IsNumber(temp1))){
-            firstOperand.insert(0, 1, currentExpression[operatorIndices[i] + counter1]);
+            firstOperand.insert(0, 1, currentExpression[operatorIndices[i] - counter1]); 
             counter2++;
         }
         while((IsNumber(temp2))){
             secondOperand.insert(secondOperand.end(), 1, currentExpression[operatorIndices[i] + counter2]);
             counter2++;
         }
-        
+        currentResult = ComputeResult(stoi(firstOperand), stoi(secondOperand), operators[i]);
+        currentExpression.replace(operatorIndices[i] - counter1, operatorIndices[i] + counter2, to_string(currentResult));
     }
 }
 
+int ComputeResult(int num1, int num2, char op){
+    if(op == '/'){
+        return (num1 / num2);
+    }else if(op == '*'){
+        return (num1 * num2);
+    }else if(op == '+'){
+        return (num1 + num2);
+    }else{
+        return (num1 - num2);
+    }
+}
 
 pair <vector <int>, vector <char>> SortOperators(pair<vector<int>, vector <char>> operators){
     vector <int> operatorPositions;
