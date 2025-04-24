@@ -201,8 +201,7 @@ string ManageBrackets(string input){
 
 int main(){
     cout << "The Program starts here" << endl;
-    int x = 0;
-    while(x < 1){
+    while(0 < 1){
         string input;
         cout << "enter your input:" << endl;
         getline(cin, input);
@@ -216,7 +215,6 @@ int main(){
                 input = ManageBrackets(input);
             }
         }
-        x++;
         cout << endl << input << endl;
     }
     return 0;
