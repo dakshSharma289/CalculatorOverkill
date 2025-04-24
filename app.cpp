@@ -25,7 +25,7 @@ pair <vector <int>, vector <bool>> FetchBrackets(string input){
 int ComputeResult(int num1, int num2, char op){
     if(op == '/'){
         return (num1 / num2);
-    }else if(op == '*'){
+    }else if(op == 'x'){
         return (num1 * num2);
     }else if(op == '+'){
         return (num1 + num2);
@@ -42,7 +42,7 @@ pair <vector <int>, vector <char>> SortOperators(pair<vector<int>, vector <char>
             if(operators.second[j] == '/'){
                 operatorPositions.push_back(operators.first[j]);
                 operatorTypes.push_back(operators.second[j]);
-            }else if(operators.second[j] == '*'){
+            }else if(operators.second[j] == 'x'){
                 operatorPositions.push_back(operators.first[j]);
                 operatorTypes.push_back(operators.second[j]);
             }
@@ -67,9 +67,9 @@ pair <vector<int>, vector<char>> FetchOperators(string currentExpression){
         if(currentExpression[i] == '/'){
             operatorIndices.push_back(i);
             operators.push_back('/');
-        }else if(currentExpression[i] == '*'){
+        }else if(currentExpression[i] == 'x'){
             operatorIndices.push_back(i);
-            operators.push_back('*');
+            operators.push_back('x');
         }else if(currentExpression[i] == '+'){
             operatorIndices.push_back(i);
             operators.push_back('+');
